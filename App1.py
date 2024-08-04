@@ -1,13 +1,10 @@
 import matplotlib.pyplot as plt
 import streamlit as st
 import pandas as pd
-import numpy as np
-import plotly.express as px
-import  seaborn as sns
+
 import preprocess, helper, helper2
-import plotly.figure_factory as ff
-from pathlib import Path
-from sklearn.preprocessing import MinMaxScaler
+
+
 
 st.set_page_config(layout="wide")
 
