@@ -1,13 +1,8 @@
 import matplotlib.pyplot as plt
 import streamlit as st
 import pandas as pd
-
 import preprocess, helper, helper2
-
-
-
-st.set_page_config(layout="wide")
-
+# st.set_page_config(layout="wide")
 test_match_df = pd.read_csv("test_Matches_Data.csv")
 test_player_df = pd.read_csv("players_info.csv")
 test_batting_df = pd.read_csv("test_Batting_Card.csv")
