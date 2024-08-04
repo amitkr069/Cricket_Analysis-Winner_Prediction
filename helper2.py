@@ -73,11 +73,14 @@ def pre_chart(test_df, odi_df, t20_df, runs):
     # plt.show()
     # was not working in streamlit
 
-    fig, ax = plt.subplots(figsize=(12, 6))
-    average_df[['year', 'Test', 'ODI', 'T20i']].set_index('year').plot(kind='bar', ax=ax)
-    ax.set_title('{} over the years'.format(runs))
-    ax.set_ylabel('Count')
-    st.pyplot(fig)
+    if average_df.empty:
+        st.header("")
+    else:
+        fig, ax = plt.subplots(figsize=(12, 6))
+        average_df[['year', 'Test', 'ODI', 'T20i']].set_index('year').plot(kind='bar', ax=ax)
+        ax.set_title('{} over the years'.format(runs))
+        ax.set_ylabel('Count')
+        st.pyplot(fig)
 
 def pre_chart_bowl(test_df, odi_df, t20_df,index, runs, chart):
     strike_rate_df = test_df[['{}'.format(index), '{}'.format(runs)]]
@@ -86,22 +89,23 @@ def pre_chart_bowl(test_df, odi_df, t20_df,index, runs, chart):
     strike_rate_df = strike_rate_df.fillna(0)
     strike_rate_df.rename(columns={"{}_x".format(runs): "Test", "{}_y".format(runs): "ODI", "{}".format(runs): "T20i"}, inplace=True)
 
-    if chart == "line":
-        fig1 = px.line(strike_rate_df, x='{}'.format(index), y=['Test', 'ODI', 'T20i'])
-        fig1.update_layout(
-            title={
-                'text': '{} over the years'.format(runs),
-                'x': 0.5,
-                'xanchor': 'center'
-            }
-        )
-        st.plotly_chart(fig1)
+    if strike_rate_df.empty:
+        st.header("")
+    else:
+        if chart == "line":
+            fig1 = px.line(strike_rate_df, x='{}'.format(index), y=['Test', 'ODI', 'T20i'])
+            fig1.update_layout(
+                title={
+                    'text': '{} over the years'.format(runs),
+                    'x': 0.5,
+                    'xanchor': 'center'
+                }
+            )
+            st.plotly_chart(fig1)
 
-    if chart == "bar":
-        fig, ax = plt.subplots(figsize=(12, 4))
-        strike_rate_df[['{}'.format(index), 'Test', 'ODI', 'T20i']].set_index('{}'.format(index)).plot(kind='bar', ax=ax)
-        ax.set_title('{} over different countries'.format(runs))
-        ax.set_ylabel('Count')
-        st.pyplot(fig)
-
-
+        if chart == "bar":
+            fig, ax = plt.subplots(figsize=(12, 4))
+            strike_rate_df[['{}'.format(index), 'Test', 'ODI', 'T20i']].set_index('{}'.format(index)).plot(kind='bar', ax=ax)
+            ax.set_title('{} over different countries'.format(runs))
+            ax.set_ylabel('Count')
+            st.pyplot(fig)
