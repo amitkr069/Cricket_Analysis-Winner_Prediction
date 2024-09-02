@@ -1,8 +1,17 @@
 import matplotlib.pyplot as plt
 import streamlit as st
 import pandas as pd
+import numpy as np
+import plotly.express as px
+import  seaborn as sns
 import preprocess, helper, helper2
+import predict_odi
+import plotly.figure_factory as ff
+from pathlib import Path
+
+
 # st.set_page_config(layout="wide")
+
 test_match_df = pd.read_csv("test_Matches_Data.csv")
 test_player_df = pd.read_csv("players_info.csv")
 test_batting_df = pd.read_csv("test_Batting_Card.csv")
@@ -43,7 +52,7 @@ st.markdown("<h1 style='text-align: center;'>Cricket Analysis</h1>", unsafe_allo
 
 user_menu = st.sidebar.radio(
     'Select an Option',
-    ('Test Matches', 'ODI Matches', 'T20 Matches', "Player wise Analysis")
+    ('Test Matches', 'ODI Matches', 'T20 Matches', "Player wise Analysis", "Predict Match Winner")
 )
 
 if user_menu == 'Test Matches':
@@ -268,13 +277,110 @@ if user_menu == "Player wise Analysis":
                 st.header("T20i Match Comparison")
                 helper.radar(player1_t20_df, player2_t20_df, selected_player1, selected_player2)
 
-           
+            # Normalizing the values
+            # scaler = MinMaxScaler()
+            #
+            # df1['Normalized_Value'] = scaler.fit_transform(df1[['Value']])
+            # df2['Normalized_Value'] = scaler.fit_transform(df2[['Value']])
+            #
+            # # Add an identifier column to each dataframe
+            # df1['DataFrame'] = 'df1'
+            # df2['DataFrame'] = 'df2'
+            #
+            # # Concatenate dataframes
+            # df_concat = pd.concat(
+            #     [df1[['Metric', 'Normalized_Value', 'DataFrame']], df2[['Metric', 'Normalized_Value', 'DataFrame']]])
+            #
+            # # Create radar chart
+            # fig = px.line_polar(df_concat, r='Normalized_Value', theta='Metric', color='DataFrame', line_close=True)
+            #
+            # fig.update_traces(fill='toself')
+            #
+            # # Display the radar chart in Streamlit
+            # st.title('Radar Chart Comparison')
+            # st.plotly_chart(fig)
+
+            # Normalize each row individually
+
+            # Initialize Scaler
+            # scaler = MinMaxScaler()
+            #
+            #
+            # # Normalize each row individually
+            # def normalize_rows(df):
+            #     df_normalized = df.copy()
+            #     values = df[['Value']].values.reshape(-1, 1)  # Extract values for normalization
+            #     df_normalized[['Value']] = scaler.fit_transform(values)  # Normalize values
+            #     return df_normalized
+            #
+            #
+            # df1_normalized = normalize_rows(df1)
+            # df2_normalized = normalize_rows(df2)
+            #
+            # # Melt the dataframes to long format for Plotly
+            # df1_melted = df1_normalized.melt(id_vars=['Metric'], value_vars=['Value'], var_name='Metric_Type',
+            #                                  value_name='Normalized_Value')
+            # df2_melted = df2_normalized.melt(id_vars=['Metric'], value_vars=['Value'], var_name='Metric_Type',
+            #                                  value_name='Normalized_Value')
+            #
+            # # Add identifier column
+            # df1_melted['DataFrame'] = 'df1'
+            # df2_melted['DataFrame'] = 'df2'
+            #
+            # # Concatenate dataframes
+            # df_concat = pd.concat([df1_melted, df2_melted])
+            #
+            # # Create radar chart
+            # fig = px.line_polar(df_concat, r='Normalized_Value', theta='Metric', color='DataFrame', line_close=True)
+            #
+            # fig.update_traces(fill='toself')
+            #
+            # # Display the radar chart in Streamlit
+            # st.title('Radar Chart Comparison')
+            # st.plotly_chart(fig)
 
 
 
 
+            # df1 = pd.DataFrame({
+            #     'Metric': ['A', 'B', 'C', 'D'],
+            #     'Value': [4, 3, 2, 5]
+            # })
+            #
+            # df2 = pd.DataFrame({
+            #     'Metric': ['A', 'B', 'C', 'D'],
+            #     'Value': [2, 4, 1, 3]
+            # })
+            #
+            # # Add an identifier column to each dataframe
+            # df1['DataFrame'] = 'a'
+            # df2['DataFrame'] = 'b'
+            #
+            # # Concatenate dataframes
+            # df_concat = pd.concat([df1, df2])
+            #
+            # # Create radar chart
+            # fig = px.line_polar(df_concat, r='Value', theta='Metric', color='DataFrame', line_close=True)
+            #
+            # fig.update_traces(fill='toself')
+            #
+            # # Display the radar chart in Streamlit
+            # st.title('Radar Chart Comparison')
+            # st.plotly_chart(fig)
+            #
+            # # Display the DataFrames
+            # st.subheader('DataFrame 1')
+            # st.dataframe(df1)
+            #
+            # st.subheader('DataFrame 2')
+            # st.dataframe(df2)
 
-
-
-
-
+if user_menu == "Predict Match Winner":
+    predict_menu = st.radio(
+        'Select a Format',
+        ('ODI', 'T20i')
+    )
+    if predict_menu == "ODI":
+        predict_odi.predict(odi_match_df, odi_fow_df, "ODI")
+    if predict_menu == "T20i":
+        predict_odi.predict(t20_match_df, t20_fow_df, "T20i")
