@@ -242,36 +242,65 @@ def radar(player1_test_df, player2_test_df, selected_player1, selected_player2):
     st.plotly_chart(fig)
 
 def player_charts_test(test_player_df, test_batting_df,test_match_df, selected_player, odi_player_df, odi_batting_df,odi_match_df, t20_player_df, t20_batting_df,t20_match_df):
-    test_df = preprocess.player_chart(test_player_df, test_batting_df,test_match_df, selected_player)
-    odi_df = preprocess.player_chart_odi(odi_player_df, odi_batting_df,odi_match_df, selected_player)
-    t20_df = preprocess.player_chart_odi(t20_player_df, t20_batting_df,t20_match_df, selected_player)
+    test_df, test_df_country = preprocess.player_chart(test_player_df, test_batting_df,test_match_df, selected_player)
+    odi_df, odi_df_country = preprocess.player_chart_odi(odi_player_df, odi_batting_df,odi_match_df, selected_player)
+    t20_df, t20_df_country = preprocess.player_chart_odi(t20_player_df, t20_batting_df,t20_match_df, selected_player)
 
-    strike_rate_df = test_df[['year', 'strikeRate']]
-    strike_rate_df = strike_rate_df.merge(odi_df[['year', 'strikeRate']], on=['year'], how='left')
-    strike_rate_df = strike_rate_df.merge(t20_df[['year', 'strikeRate']], on=['year'], how='left')
-    strike_rate_df = strike_rate_df.fillna(0)
-    strike_rate_df.rename(columns={"strikeRate_x": "Test", "strikeRate_y":"ODI", "strikeRate":"T20i"}, inplace=True)
+    # strike_rate_df = test_df[['year', 'strikeRate']]
+    # strike_rate_df = strike_rate_df.merge(odi_df[['year', 'strikeRate']], on=['year'], how='left')
+    # strike_rate_df = strike_rate_df.merge(t20_df[['year', 'strikeRate']], on=['year'], how='left')
+    # strike_rate_df = strike_rate_df.fillna(0)
+    # strike_rate_df.rename(columns={"strikeRate_x": "Test", "strikeRate_y":"ODI", "strikeRate":"T20i"}, inplace=True)
+    #
+    #
+    # average_df = test_df[['year','Average']]
+    # average_df = average_df.merge(odi_df[['year', 'Average']], on=['year'], how='left')
+    # average_df = average_df.merge(t20_df[['year', 'Average']], on=['year'], how='left')
+    # average_df = average_df.fillna(0)
+    # average_df.rename(columns={"Average_x": "Test", "Average_y": "ODI", "Average": "T20i"}, inplace=True)
+    #
+    # # st.dataframe(average_df)
+    #
+    #
+    # a = "Strike Rate"
+    # helper2.charts(strike_rate_df, a)
+    # b = "Average"
+    # helper2.charts(average_df, b)
+    # runs = "runs"
+    # helper2.pre_chart(test_df, odi_df, t20_df, runs)
+    # fours = 'fours'
+    # sixes = 'sixes'
+    # helper2.pre_chart(test_df, odi_df, t20_df, fours)
+    # helper2.pre_chart(test_df, odi_df, t20_df, sixes)
+    index1 = "year"
+    chart1 = "line"
+    value1 = "strikeRate"
+    helper2.pre_chart_bat(test_df, odi_df, t20_df, index1, value1, chart1)
+
+    value2 = "Average"
+    helper2.pre_chart_bat(test_df, odi_df, t20_df, index1, value2, chart1)
+
+    chart2 = "bar"
+    value3 = "runs"
+    helper2.pre_chart_bat(test_df, odi_df, t20_df, index1, value3, chart2)
+
+    value4 = "fours"
+    helper2.pre_chart_bat(test_df, odi_df, t20_df, index1, value4, chart2)
+
+    value5 = 'sixes'
+    helper2.pre_chart_bat(test_df, odi_df, t20_df, index1, value5, chart2)
 
 
-    average_df = test_df[['year','Average']]
-    average_df = average_df.merge(odi_df[['year', 'Average']], on=['year'], how='left')
-    average_df = average_df.merge(t20_df[['year', 'Average']], on=['year'], how='left')
-    average_df = average_df.fillna(0)
-    average_df.rename(columns={"Average_x": "Test", "Average_y": "ODI", "Average": "T20i"}, inplace=True)
 
-    # st.dataframe(average_df)
+    index2 = "Country"
+    value6 = "Matches"
+    helper2.pre_chart_bat(test_df_country, odi_df_country, t20_df_country, index2, value6, chart2)
+
+    value7 = 'runs'
+    helper2.pre_chart_bat(test_df_country, odi_df_country, t20_df_country, index2, value7, chart2)
 
 
-    a = "Strike Rate"
-    helper2.charts(strike_rate_df, a)
-    b = "Average"
-    helper2.charts(average_df, b)
-    runs = "runs"
-    helper2.pre_chart(test_df, odi_df, t20_df, runs)
-    fours = 'fours'
-    sixes = 'sixes'
-    helper2.pre_chart(test_df, odi_df, t20_df, fours)
-    helper2.pre_chart(test_df, odi_df, t20_df, sixes)
+
 
 
 
@@ -305,12 +334,3 @@ def player_charts_test_bowl(test_player_df, test_bowling_df, test_match_df, sele
     helper2.pre_chart_bowl(test_df_bowl_country, odi_df_bowl_country, t20_df_bowl_country, index2, value5, chart2)
     value6 = "wickets"
     helper2.pre_chart_bowl(test_df_bowl_country, odi_df_bowl_country, t20_df_bowl_country, index2, value6, chart2)
-
-
-
-
-
-
-
-
-
