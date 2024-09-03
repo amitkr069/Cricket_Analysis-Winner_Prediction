@@ -1,8 +1,8 @@
 import streamlit as st
-import pickle
+# import pickle
 # from sklearn.pipeline import Pipeline
 import pandas as pd
-
+import joblib
 # st.set_page_config(layout="wide")
 
 def predict(odi_match_df, odi_fow_df, format):
@@ -12,14 +12,16 @@ def predict(odi_match_df, odi_fow_df, format):
     cities = odi_match_df['Match Venue (City)'].unique().tolist()
 
     if format == 'ODI':
-        with open('pipe1.pkl', 'rb') as file:
-            pipe = pickle.load(file)
+        # with open('pipe1.pkl', 'rb') as file:
+        #     pipe = pickle.load(file)
+        pipe = joblib.load('model_odi.joblib')
 
     if format == 'T20i':
-        with open('pipe_t20.pkl', 'rb') as file:
-            pipe = pickle.load(file)
+        # with open('pipe_t20.pkl', 'rb') as file:
+        #     pipe = pickle.load(file)
+        pipe = joblib.load('model_t20.joblib')
 
-    print(type(pipe))
+    # print(type(pipe))
 
     st.title("{} win predictor".format(format))
 
@@ -70,11 +72,14 @@ def predict(odi_match_df, odi_fow_df, format):
             st.table(input_df)
 
             result = pipe.predict_proba(input_df)
-            loss = result[0][0]
-            win = result[0][1]
+            if balls_left == 0 and runs_left > 0:
+                loss = 1
+                win = 0
+            elif runs_left <= 0 and balls_left >= 0:
+                win = 1
+                loss = 0
+            else:
+                loss = result[0][0]
+                win = result[0][1]
             st.header(batting_team + "- " + str(round(win*100))+ '%')
             st.header(bowling_team + '- ' + str(round(loss*100)) + '%')
-
-
-
-
