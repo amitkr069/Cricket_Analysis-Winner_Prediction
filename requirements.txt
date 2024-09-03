@@ -4,4 +4,4 @@ seaborn
 matplotlib
 datetime
 joblib
-sklearn
+scikit-learn
