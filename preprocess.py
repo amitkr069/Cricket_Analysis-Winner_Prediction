@@ -302,7 +302,31 @@ def player_chart(test_player_df, test_batting_df,test_match_df, selected_player)
     }).reset_index()
     grouped_df['Average'] = grouped_df['runs'] / grouped_df['Match ID']
 
-    return grouped_df
+    specific_player_df_country = specific_player_df.merge(test_match_df[["Match ID", "Team1 Name", "Team2 Name"]],
+                                                          on=["Match ID"], how="left")
+
+    def determine_opposition(row):
+        if row['team'] == row['Team1 Name']:
+            return row['Team2 Name']
+        elif row['team'] == row['Team2 Name']:
+            return row['Team1 Name']
+        else:
+            return None
+
+    specific_player_df_country['opposition'] = specific_player_df_country.apply(determine_opposition, axis=1)
+    specific_player_df_country = specific_player_df_country.drop(columns=['Team1 Name', 'Team2 Name'])
+
+    grouped_bat_country = specific_player_df_country.groupby('opposition').agg({
+        'Match ID': 'count',
+        'runs': 'sum',
+        'strikeRate': 'mean',
+        'fours': 'sum',
+        'sixes': 'sum'
+    }).reset_index()
+
+    grouped_bat_country['Average'] = grouped_bat_country['runs'] / grouped_bat_country['Match ID']
+    grouped_bat_country.rename(columns={'opposition':'Country',"Match ID":"Matches"}, inplace=True)
+    return grouped_df, grouped_bat_country
 
 def player_chart_odi(test_player_df, test_batting_df,test_match_df, selected_player):
     # test ke jgh odi ya t20 hoga
@@ -330,7 +354,32 @@ def player_chart_odi(test_player_df, test_batting_df,test_match_df, selected_pla
     }).reset_index()
     grouped_df_odi['Average'] = grouped_df_odi['runs'] / grouped_df_odi['Match ID']
 
-    return grouped_df_odi
+    specific_player_df_country = specific_player_df.merge(test_match_df[["Match ID", "Team1 Name", "Team2 Name"]],
+                                                          on=["Match ID"], how="left")
+
+    def determine_opposition(row):
+        if row['team'] == row['Team1 Name']:
+            return row['Team2 Name']
+        elif row['team'] == row['Team2 Name']:
+            return row['Team1 Name']
+        else:
+            return None
+
+    specific_player_df_country['opposition'] = specific_player_df_country.apply(determine_opposition, axis=1)
+    specific_player_df_country = specific_player_df_country.drop(columns=['Team1 Name', 'Team2 Name'])
+
+    grouped_bat_country = specific_player_df_country.groupby('opposition').agg({
+        'Match ID': 'count',
+        'runs': 'sum',
+        'strikeRate': 'mean',
+        'fours': 'sum',
+        'sixes': 'sum'
+    }).reset_index()
+
+    grouped_bat_country['Average'] = grouped_bat_country['runs'] / grouped_bat_country['Match ID']
+    grouped_bat_country.rename(columns={'opposition':'Country',"Match ID":"Matches"}, inplace=True)
+
+    return grouped_df_odi, grouped_bat_country
 
 
 
@@ -419,5 +468,3 @@ def player_chart_bowl_odi(test_player_df, test_bowling_df,test_match_df, selecte
     grouped_bowl_country.rename(columns={'opposition':'Country',"Match ID":"Matches", 'conceded':'Runs conceded'}, inplace=True)
 
     return grouped_bowl, grouped_bowl_country
-
-
